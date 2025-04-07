@@ -1,5 +1,6 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { Movie } from '../types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type FavoritesContextType = {
   favorites: Movie[];
@@ -13,12 +14,25 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(undefin
 export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
   const [favorites, setFavorites] = useState<Movie[]>([]);
 
-  const addToFavorites = (movie: Movie) => {
+  useEffect(()=>{
+    checkForFavorites();
+  },[])
+
+  const checkForFavorites=async()=>{
+    const data= await AsyncStorage.getItem('fav')
+    if(data){
+      setFavorites(JSON.parse(data))
+    }
+  }
+
+  const addToFavorites = async(movie: Movie) => {
     setFavorites((prev) => [...prev, movie]);
+    await AsyncStorage.setItem('fav',JSON.stringify([...favorites, movie]))
   };
 
-  const removeFromFavorites = (movieId: number) => {
+  const removeFromFavorites = async(movieId: number) => {
     setFavorites((prev) => prev.filter((m) => m.id !== movieId));
+    await AsyncStorage.setItem('fav',JSON.stringify(favorites?.filter((m) => m.id !== movieId)))
   };
 
   const isFavorite = (movieId: number) => {

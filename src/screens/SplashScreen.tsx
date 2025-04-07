@@ -4,7 +4,7 @@ import { useMovies } from '../context/MoviesContext'
 
 const SplashScreen = () => {
     //const {movies}=useMovies();
-    console.log('Movies')
+   //console.log('Movies')
   return (
     <View>
       <Text>SplasScreen</Text>

@@ -5,14 +5,17 @@ import {
   ImageBackground,
   Dimensions,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import {colors} from '../theme';
 import {useMovies} from '../context/MoviesContext';
+import {useNavigation} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('window');
 
 const Carousel = () => {
   const {movies} = useMovies();
+  const navigation = useNavigation();
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
@@ -32,34 +35,42 @@ const Carousel = () => {
         onScroll={handleScroll}
         keyExtractor={item => item.id.toString()}
         renderItem={({item}) => (
-          <ImageBackground
-            id={item?.id?.toString()}
-            source={{
-              uri: `https://image.tmdb.org/t/p/w500/${item.backdrop_path}`,
-            }}
-            style={{
-              width: width,
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
+          <TouchableOpacity
+            onPress={() => {
+              /*@ts-ignore*/
+              navigation.navigate('MovieDetail', {
+                movie: item,
+              });
             }}>
-            <View
-              style={{
-                ...StyleSheet.absoluteFillObject,
-                backgroundColor: 'rgba(0, 0, 0, 0.8)', // Change opacity as needed
-              }}
-            />
-
             <ImageBackground
+              id={item?.id?.toString()}
               source={{
-                uri: `https://image.tmdb.org/t/p/w500/${item.poster_path}`,
+                uri: `https://image.tmdb.org/t/p/w500/${item.backdrop_path}`,
               }}
-              style={styles.image}
-              imageStyle={styles.imageBorder}>
-              {/* Add any overlay or text here */}
-              <View style={{position: 'absolute', width: '100%'}} />
+              style={{
+                width: width,
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <View
+                style={{
+                  ...StyleSheet.absoluteFillObject,
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)', // Change opacity as needed
+                }}
+              />
+
+              <ImageBackground
+                source={{
+                  uri: `https://image.tmdb.org/t/p/w500/${item.poster_path}`,
+                }}
+                style={styles.image}
+                imageStyle={styles.imageBorder}>
+                {/* Add any overlay or text here */}
+                <View style={{position: 'absolute', width: '100%'}} />
+              </ImageBackground>
             </ImageBackground>
-          </ImageBackground>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -70,7 +81,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: height * 0.7,
-    
+
     backgroundColor: colors.background,
   },
   image: {

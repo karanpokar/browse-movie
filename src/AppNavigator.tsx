@@ -3,10 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from './screens/SplashScreen';
 import DashboardScreen from './screens/DashboardScreen';
-import FavoritesScreen from './screens/FavoritesScreen';
 import MovieDetailScreen from './screens/MovieDetailScreen';
 import { MoviesProvider } from './context/MoviesContext';
 import SearchScreen from './screens/SearchScreen';
+import { FavoritesProvider } from './context/FavoritesContext';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -24,6 +24,7 @@ const AppNavigator = () => {
     console.log('AppNav')
   return (
     <MoviesProvider>
+      <FavoritesProvider>
       <NavigationContainer >
         <Stack.Navigator initialRouteName="Dashboard" screenOptions={{ 
           headerShown: false 
@@ -35,7 +36,6 @@ const AppNavigator = () => {
           }}  
           component={SearchScreen} />
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
-          <Stack.Screen name="Favorites" component={FavoritesScreen} />
           <Stack.Screen name="MovieDetail"
           options={{
             presentation: 'modal', // 👈 bottom-to-top transition on iOS
@@ -43,6 +43,7 @@ const AppNavigator = () => {
           component={MovieDetailScreen} />
         </Stack.Navigator>
       </NavigationContainer>
+      </FavoritesProvider>
     </MoviesProvider>
   );
 };

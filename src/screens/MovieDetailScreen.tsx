@@ -5,19 +5,24 @@ import {
   ScrollView,
   Text,
   StyleSheet,
+  Platform,
+  TouchableOpacity,
 } from 'react-native';
-import { colors, typography } from '../theme';
+import {colors, typography} from '../theme';
 import LinearGradient from 'react-native-linear-gradient';
-import { useEffect, useState } from 'react';
-import { useMovies } from '../context/MoviesContext';
-import { MovieDetail, Movie } from '../types';
-import { StarRatingDisplay } from 'react-native-star-rating-widget';
-import { convertMinutesToHours } from '../utils/formatDate';
+import {useEffect, useState} from 'react';
+import {useMovies} from '../context/MoviesContext';
+import {MovieDetail, Movie} from '../types';
+import {StarRatingDisplay} from 'react-native-star-rating-widget';
+import {convertMinutesToHours} from '../utils/formatDate';
 import MovieSection from '../components/MovieSection';
 
-const MovieDetailScreen = ({ route }: any) => {
-  const { movie } = route.params;
-  const { width, height } = Dimensions.get('screen');
+import {useFavorites} from '../context/FavoritesContext';
+import DetailNavBar from '../components/Detail/DetailNavBar';
+
+const MovieDetailScreen = ({route}: any) => {
+  const {movie} = route.params;
+  const {width, height} = Dimensions.get('screen');
   /*@ts-ignore*/
   const [movieDetail, setMovieDetail] = useState<MovieDetail>(null);
   const [similarMovie, setSimilarMovie] = useState<Movie[]>([]);
@@ -45,33 +50,33 @@ const MovieDetailScreen = ({ route }: any) => {
   };
 
   const fetchSimilarMovie = async () => {
-    const details:any = await fetchMovieSimilar(movie?.id);
+    const details: any = await fetchMovieSimilar(movie?.id);
     if (details?.results?.length > 0) {
       setSimilarMovie(details.results);
     }
   };
 
   const fetchVideo = async () => {
-    const details :any = await fetchMovieVideos(movie?.id);
+    const details: any = await fetchMovieVideos(movie?.id);
     if (details?.results?.length > 0) {
       setMovieVideos(details.results);
     }
   };
 
   const fetchMovieProvider = async () => {
-    const details:any = await fetchMovieProviders(movie?.id);
-      /*@ts-ignore*/
+    const details: any = await fetchMovieProviders(movie?.id);
+    /*@ts-ignore*/
     if (details) {
-      
       setMovieProvider(details?.rent || details?.buy || []);
     }
   };
 
   return (
     <View style={styles.container}>
+      <DetailNavBar movie={movie} />
       <Image
         style={styles.poster}
-        source={{ uri: `https://image.tmdb.org/t/p/w500/${movie.poster_path}` }}
+        source={{uri: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`}}
       />
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
         <LinearGradient
@@ -100,21 +105,22 @@ const MovieDetailScreen = ({ route }: any) => {
 
           <View style={styles.genreRow}>
             {movieDetail?.genres?.map((item, index) => (
-              <Text
-                key={item.id}
-                style={styles.genreText}
-              >
-                {index !== 0 ? ' | ' : ''}{item.name}
+              <Text key={item.id} style={styles.genreText}>
+                {index !== 0 ? ' | ' : ''}
+                {item.name}
               </Text>
             ))}
           </View>
 
           <Text style={styles.overview}>{movieDetail?.overview}</Text>
-
-          <MovieSection section="Similar" movies={similarMovie} />
+          {similarMovie?.length > 0 && (
+            <View style={{marginLeft: -20}}>
+              <MovieSection section="Similar" movies={similarMovie} />
+            </View>
+          )}
 
           {movieProvider?.length > 0 && (
-              /*@ts-ignore*/
+            /*@ts-ignore*/
             <>
               <Text style={styles.sectionHeading}>Available On</Text>
               <View style={styles.providerRow}>
@@ -138,12 +144,14 @@ const MovieDetailScreen = ({ route }: any) => {
 
 export default MovieDetailScreen;
 
-const { width, height } = Dimensions.get('screen');
+const {width, height} = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+    position: 'relative',
+    paddingTop: Platform.OS == 'ios' ? 50 : 20,
   },
   poster: {
     width,
