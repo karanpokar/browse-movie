@@ -1,8 +1,10 @@
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Movie} from '../types';
-import {size} from '../theme';
+import {size, typography} from '../theme';
 import {useNavigation} from '@react-navigation/native';
+import GlassCard from './GlassComponent';
+
 
 const MovieItem = ({movie, index}: {movie: Movie; index: string}) => {
   const navigation = useNavigation();
@@ -20,6 +22,7 @@ const MovieItem = ({movie, index}: {movie: Movie; index: string}) => {
         width: 130,
         borderRadius: 6,
         marginLeft: size.horizontalPadding,
+        position:'relative'
       }}>
       <Image
         style={{
@@ -30,6 +33,7 @@ const MovieItem = ({movie, index}: {movie: Movie; index: string}) => {
         }}
         source={{uri: `https://image.tmdb.org/t/p/w500/${movie?.poster_path}`}}
       />
+      
     </TouchableOpacity>
   );
 };

@@ -6,7 +6,6 @@ import {
   Text,
   StyleSheet,
   Platform,
-  TouchableOpacity,
 } from 'react-native';
 import {colors, typography} from '../theme';
 import LinearGradient from 'react-native-linear-gradient';
@@ -16,13 +15,10 @@ import {MovieDetail, Movie} from '../types';
 import {StarRatingDisplay} from 'react-native-star-rating-widget';
 import {convertMinutesToHours} from '../utils/formatDate';
 import MovieSection from '../components/MovieSection';
-
-import {useFavorites} from '../context/FavoritesContext';
 import DetailNavBar from '../components/Detail/DetailNavBar';
 
 const MovieDetailScreen = ({route}: any) => {
   const {movie} = route.params;
-  const {width, height} = Dimensions.get('screen');
   /*@ts-ignore*/
   const [movieDetail, setMovieDetail] = useState<MovieDetail>(null);
   const [similarMovie, setSimilarMovie] = useState<Movie[]>([]);

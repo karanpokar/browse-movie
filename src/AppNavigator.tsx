@@ -32,13 +32,13 @@ const AppNavigator = () => {
           <Stack.Screen name="Splash" component={SplashScreen} />
           <Stack.Screen name="SearchScreen" 
           options={{
-            presentation: 'modal', // 👈 bottom-to-top transition on iOS
+            presentation: 'modal',
           }}  
           component={SearchScreen} />
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="MovieDetail"
           options={{
-            presentation: 'modal', // 👈 bottom-to-top transition on iOS
+            presentation: 'modal', 
           }} 
           component={MovieDetailScreen} />
         </Stack.Navigator>

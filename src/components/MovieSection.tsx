@@ -3,6 +3,7 @@ import React from 'react';
 import {Movie} from '../types';
 import MovieItem from './MovieItem';
 import {colors, size, typography} from '../theme';
+import {useMovies} from '../context/MoviesContext';
 
 type MovieSection = {
   section: string;
@@ -10,6 +11,7 @@ type MovieSection = {
 };
 
 const MovieSection = ({section, movies}: MovieSection) => {
+  const {updateScroll} = useMovies();
   return (
     <View
       style={{
@@ -30,6 +32,10 @@ const MovieSection = ({section, movies}: MovieSection) => {
       <FlatList
         data={movies}
         horizontal
+        onEndReached={() => {
+          updateScroll(section);
+        }}
+        keyExtractor={(item)=> `${section}:${item?.id}`}
         renderItem={({item, index, separators}) => (
           <MovieItem movie={item} index={index?.toString()} />
         )}

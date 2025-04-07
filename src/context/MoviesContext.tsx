@@ -38,6 +38,7 @@ type MoviesContextType = {
   fetchMovieProviders: (id: number) => Promise<void>;
   fetchMovieDetails: (id: number) => Promise<any>;
   searchMovie: (query: string) => Promise<any>;
+  updateScroll: (type: string) => Promise<void>;
 };
 
 const MoviesContext = createContext<MoviesContextType | undefined>(undefined);
@@ -79,7 +80,7 @@ export const MoviesProvider = ({children}: {children: ReactNode}) => {
       ...prev,
       nowPlaying: [...prev.nowPlaying, ...res.data.results],
     }));
-    setPages(prev => ({...prev, nowPlaying: res.data?.page}));
+    setPages(prev => ({...prev, nowPlaying: res.data?.page + 1}));
   };
 
   const fetchPopular = async () => {
@@ -89,7 +90,7 @@ export const MoviesProvider = ({children}: {children: ReactNode}) => {
       ...prev,
       popular: [...prev.popular, ...res.data.results],
     }));
-    setPages(prev => ({...prev, popular: res.data?.page}));
+    setPages(prev => ({...prev, popular: res.data?.page + 1}));
   };
 
   const fetchTopRated = async () => {
@@ -101,7 +102,7 @@ export const MoviesProvider = ({children}: {children: ReactNode}) => {
       ...prev,
       topRated: [...prev.topRated, ...res.data.results],
     }));
-    setPages(prev => ({...prev, topRated: res.data?.page}));
+    setPages(prev => ({...prev, topRated: res.data?.page + 1}));
   };
 
   const fetchUpcoming = async () => {
@@ -111,7 +112,7 @@ export const MoviesProvider = ({children}: {children: ReactNode}) => {
       ...prev,
       upcoming: [...prev.upcoming, ...res.data.results],
     }));
-    setPages(prev => ({...prev, upcoming: res.data?.page}));
+    setPages(prev => ({...prev, upcoming: res.data?.page + 1}));
   };
 
   const fetchMovieDetails = async (id: number) => {
@@ -143,6 +144,27 @@ export const MoviesProvider = ({children}: {children: ReactNode}) => {
     return res.data?.results;
   };
 
+  {
+    /*
+     <MovieSection section={'Now Playing'} movies={movies?.nowPlaying} />
+        <MovieSection section={'Top Rated'} movies={movies?.topRated} />
+        <MovieSection section={'Popular'} movies={movies?.popular} />
+        <MovieSection section={'Upcoming'} movies={movies?.upcoming} />
+    */
+  }
+
+  const updateScroll = async (type: string) => {
+    if (type == 'Now Playing') {
+      fetchNowPlaying();
+    } else if (type == 'Top Rated') {
+      fetchTopRated();
+    } else if (type == 'Popular') {
+      fetchPopular();
+    } else {
+      fetchUpcoming();
+    }
+  };
+
   useEffect(() => {
     //console.log('UE Called')
     fetchNowPlaying();
@@ -168,6 +190,7 @@ export const MoviesProvider = ({children}: {children: ReactNode}) => {
         fetchMovieProviders,
         fetchMovieVideos,
         searchMovie,
+        updateScroll,
       }}>
       {children}
     </MoviesContext.Provider>
